@@ -64,7 +64,7 @@ function validate() {
 
 /* --- Envio --- */
 if (form) {
-  form.addEventListener("submit", async (e) => {
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
 
     if (!validate()) return;
@@ -75,22 +75,6 @@ if (form) {
       btn.disabled = true;
       btn.textContent = "ENVIANDO...";
     }
-
-    // Dados do lead (capturados antes do reset do formulário)
-    const name = nomeInput?.value.trim() || "";
-    const email = emailInput?.value.trim() || "";
-    const phone = telefoneInput?.value.trim() || "";
-
-    // Envia o evento de conversão para o PixelX
-    await window.pixel_x_app.send_event({
-      // Evento
-      event_name: "Lead",
-
-      // Lead
-      lead_name: name,
-      lead_email: email,
-      lead_phone: phone
-    });
 
     // Mostra sucesso
     form.reset();
@@ -105,10 +89,9 @@ if (form) {
       });
     }
 
-    // Redireciona para o link rastreado
-    // >>> DESATIVADO TEMPORARIAMENTE para teste de rastreamento — reativar depois.
-    // setTimeout(() => {
-    //   window.location.href = REDIRECT_URL;
-    // }, 700);
+//    // Redireciona para o link rastreado
+//    setTimeout(() => {
+//      window.location.href = REDIRECT_URL;
+//    }, 700);
   });
 }
