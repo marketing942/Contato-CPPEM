@@ -106,8 +106,9 @@ if (form) {
     }
 
     // Redireciona para o link rastreado
-    setTimeout(() => {
-      window.location.href = REDIRECT_URL;
-    }, 700);
+    // >>> DESATIVADO TEMPORARIAMENTE para teste de rastreamento — reativar depois.
+    // setTimeout(() => {
+    //   window.location.href = REDIRECT_URL;
+    // }, 700);
   });
 }
