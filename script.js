@@ -63,14 +63,35 @@ function validate() {
 }
 
 /* --- Envio --- */
-const submitBtn = document.getElementById("IPEyzyfmJhKQEYIXAlZH");
+const submitBtn = document.getElementById("lead_submit");
 
-function enviar() {
+async function enviar() {
   if (!validate()) return;
+
+  /* Captura os valores ANTES do reset do formulário. */
+  const nome = nomeInput?.value.trim() || "";
+  const email = emailInput?.value.trim() || "";
+  const telefone = telefoneInput?.value.trim() || "";
 
   if (submitBtn) {
     submitBtn.disabled = true;
     submitBtn.textContent = "ENVIANDO...";
+  }
+
+  /* PixelX — evento de Lead.
+     Precisa ser disparado ANTES de qualquer redirecionamento. */
+  try {
+    await window.pixel_x_app?.send_event({
+      // Evento
+      event_name: "Lead",
+
+      // Lead
+      lead_name: nome,
+      lead_email: email,
+      lead_phone: telefone,
+    });
+  } catch (err) {
+    console.error("PixelX send_event falhou:", err);
   }
 
   form?.reset();
@@ -82,7 +103,10 @@ function enviar() {
   }
 }
 
-submitBtn?.addEventListener("click", enviar);
+submitBtn?.addEventListener("click", (e) => {
+  e.preventDefault();
+  enviar();
+});
 
 // Mantém o Enter funcionando sem submit nativo
 form?.addEventListener("keydown", (e) => {
