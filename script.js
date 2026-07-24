@@ -7,10 +7,10 @@
    ========================================================= */
 
 /* Link de destino após o envio — link rastreado (PixelX, domínio próprio). */
-const REDIRECT_URL = "https://pxa.cppem.com.br/lt/cppem-contato-grupos";
+const REDIRECT_URL = "https://pxa.cppem.com.br/lt/whatsapp-redirect";
 
 /* --- Elementos (IDs conforme index.html) --- */
-const form = document.getElementById("IPEyzyfmJhKQEYIXAlZH");
+const form = document.getElementById("lead_form");
 const nomeInput = document.getElementById("lead_name");
 const emailInput = document.getElementById("lead_email");
 const telefoneInput = document.getElementById("lead_phone");
