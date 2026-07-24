@@ -9,22 +9,23 @@
 /* Link de destino após o envio — link rastreado (PixelX, domínio próprio). */
 const REDIRECT_URL = "https://pxa.cppem.com.br/lt/cppem-contato-grupos";
 
-/* --- Elementos --- */
-const form = document.getElementById("lead-form");
-const telefoneInput = document.getElementById("telefone");
+/* --- Elementos (IDs conforme index.html) --- */
+const form = document.getElementById("IPEyzyfmJhKQEYIXAlZH");
+const nomeInput = document.getElementById("lead_name");
+const emailInput = document.getElementById("lead_email");
+const telefoneInput = document.getElementById("lead_phone");
 
-/* --- Validação --- */
-function setError(id, msg) {
-  const input = document.getElementById(id);
-  const errorEl = document.querySelector(`[data-error-for="${id}"]`);
+/* --- Validação ---
+   Cada campo tem o id do input e a chave usada no data-error-for (= atributo name). */
+function setError(errorKey, input, msg) {
+  const errorEl = document.querySelector(`[data-error-for="${errorKey}"]`);
 
   if (input) input.classList.add("is-invalid");
   if (errorEl) errorEl.textContent = msg;
 }
 
-function clearError(id) {
-  const input = document.getElementById(id);
-  const errorEl = document.querySelector(`[data-error-for="${id}"]`);
+function clearError(errorKey, input) {
+  const errorEl = document.querySelector(`[data-error-for="${errorKey}"]`);
 
   if (input) input.classList.remove("is-invalid");
   if (errorEl) errorEl.textContent = "";
@@ -35,24 +36,26 @@ const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 function validate() {
   let ok = true;
 
-  const nome = document.getElementById("nome")?.value.trim() || "";
-  const email = document.getElementById("email")?.value.trim() || "";
+  const nome = nomeInput?.value.trim() || "";
+  const email = emailInput?.value.trim() || "";
   const tel = telefoneInput?.value.trim() || "";
 
-  ["nome", "email", "telefone"].forEach(clearError);
+  clearError("name", nomeInput);
+  clearError("email", emailInput);
+  clearError("phone", telefoneInput);
 
   if (nome.length < 2) {
-    setError("nome", "Informe seu nome completo.");
+    setError("name", nomeInput, "Informe seu nome completo.");
     ok = false;
   }
 
   if (!isEmail(email)) {
-    setError("email", "Informe um e-mail válido.");
+    setError("email", emailInput, "Informe um e-mail válido.");
     ok = false;
   }
 
   if (tel.length < 1) {
-    setError("telefone", "Informe seu WhatsApp.");
+    setError("phone", telefoneInput, "Informe seu WhatsApp.");
     ok = false;
   }
 
@@ -72,6 +75,13 @@ if (form) {
       btn.disabled = true;
       btn.textContent = "ENVIANDO...";
     }
+
+    // Envia o evento de conversão para o GTM server-side.
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "lead_submit",
+      form_id: "cppem_captura"
+    });
 
     // Mostra sucesso
     form.reset();
