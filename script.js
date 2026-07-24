@@ -64,7 +64,7 @@ function validate() {
 
 /* --- Envio --- */
 if (form) {
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     if (!validate()) return;
@@ -76,11 +76,20 @@ if (form) {
       btn.textContent = "ENVIANDO...";
     }
 
-    // Envia o evento de conversão para o GTM server-side.
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: "lead_submit",
-      form_id: "cppem_captura"
+    // Dados do lead (capturados antes do reset do formulário)
+    const name = nomeInput?.value.trim() || "";
+    const email = emailInput?.value.trim() || "";
+    const phone = telefoneInput?.value.trim() || "";
+
+    // Envia o evento de conversão para o PixelX
+    await window.pixel_x_app.send_event({
+      // Evento
+      event_name: "Lead",
+
+      // Lead
+      lead_name: name,
+      lead_email: email,
+      lead_phone: phone
     });
 
     // Mostra sucesso
