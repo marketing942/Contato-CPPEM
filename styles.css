@@ -127,8 +127,10 @@ img{display:block;max-width:100%}
 .cards--dores .card__num{color:var(--danger)}
 
 /* ─── TABELA COMPARATIVA ────────────────────────────────── */
+.compare-wrap{position:relative}
 .compare{width:100%;overflow-x:auto;border-radius:16px;border:1px solid var(--border);
-  background:var(--bg-2)}
+  background:var(--bg-2);-webkit-overflow-scrolling:touch}
+.compare-hint{display:none}
 .compare table{width:100%;min-width:640px;border-collapse:collapse;text-align:left}
 .compare th,.compare td{padding:1.05rem 1.2rem;vertical-align:middle;
   border-bottom:1px solid var(--border);font-size:.95rem}
@@ -197,11 +199,21 @@ img{display:block;max-width:100%}
   .footer__inner{grid-template-columns:1fr 1fr;gap:1.8rem}
   .footer__brand{grid-column:1 / -1}
 }
+@media (max-width:760px){
+  /* pista visual de que a tabela rola para o lado */
+  .compare-wrap::after{content:"";position:absolute;top:0;right:0;bottom:34px;width:40px;
+    pointer-events:none;border-radius:0 16px 16px 0;
+    background:linear-gradient(90deg,rgba(17,17,21,0),var(--bg-2))}
+  .compare-hint{display:block;margin-top:.7rem;text-align:center;
+    font-family:var(--font-body);font-size:.82rem;font-weight:600;letter-spacing:.02em;
+    color:var(--gold);opacity:.85}
+}
 @media (max-width:560px){
   .section{padding:3.2rem 1.1rem}
   .cards{grid-template-columns:1fr}
   .footer__inner{grid-template-columns:1fr}
   .footer__bar{justify-content:center;text-align:center}
+  .compare th,.compare td{padding:.85rem .9rem;font-size:.9rem}
 }
 
 @media (prefers-reduced-motion:reduce){
