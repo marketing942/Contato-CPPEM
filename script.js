@@ -1,11 +1,13 @@
 /* =========================================================
-   CPPEM — Formulário → Google Sheets + WhatsApp
+   CPPEM — Formulário de captura
    (rastreamento é feito 100% via Google Tag Manager server-side)
+
+   >>> Envio para Google Sheets REMOVIDO temporariamente.
+   >>> Redirecionamento agora usa um único link rastreado (PixelX).
    ========================================================= */
 
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbxdFplWVSfhTjvyIA7HIWb645xRjGNhBVhTdTf5UMjo0lSpW_A_jCuys0qB4uImKXPQ/exec?aba=CPPEM";
-
-const WHATSAPP_REDIRECT = "https://wa.me/5581973105354?text=Quero%20come%C3%A7ar%20minha%20prepara%C3%A7%C3%A3o!%20%F0%9F%92%80%F0%9F%94%A5";
+/* Link de destino após o envio — link rastreado (PixelX, domínio próprio). */
+const REDIRECT_URL = "https://pxa.cppem.com.br/lt/cppem-contato-grupos";
 
 /* --- Elementos --- */
 const form = document.getElementById("lead-form");
@@ -59,7 +61,7 @@ function validate() {
 
 /* --- Envio --- */
 if (form) {
-  form.addEventListener("submit", async (e) => {
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
 
     if (!validate()) return;
@@ -71,57 +73,22 @@ if (form) {
       btn.textContent = "ENVIANDO...";
     }
 
-    const nome = document.getElementById("nome").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const telefone = telefoneInput.value.trim();
+    // Mostra sucesso
+    form.reset();
 
-    const payload = {
-      nome: nome,
-      email: email,
-      telefone: telefone,
-      origem: "pagina_captura_cppem",
-      pagina: window.location.href,
-      data_envio: new Date().toISOString()
-    };
+    const successEl = document.getElementById("form-success");
 
-    try {
-      // 1. Envia primeiro para o Google Sheets
-      await fetch(SHEET_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8"
-        },
-        body: JSON.stringify(payload)
+    if (successEl) {
+      successEl.hidden = false;
+      successEl.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
       });
-
-      // 2. Mostra sucesso
-      form.reset();
-
-      const successEl = document.getElementById("form-success");
-
-      if (successEl) {
-        successEl.hidden = false;
-        successEl.scrollIntoView({
-          behavior: "smooth",
-          block: "center"
-        });
-      }
-
-      // 3. Redireciona para o WhatsApp
-      setTimeout(() => {
-        window.location.href = `${WHATSAPP_REDIRECT}`;
-      }, 700);
-
-    } catch (err) {
-      console.error("[Form] Erro ao enviar:", err);
-
-      setError("telefone", "Erro ao enviar. Tente novamente.");
-
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = "QUERO ESTUDAR CERTO";
-      }
     }
+
+    // Redireciona para o link rastreado
+    setTimeout(() => {
+      window.location.href = REDIRECT_URL;
+    }, 700);
   });
 }
