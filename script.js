@@ -7,7 +7,7 @@
    ========================================================= */
 
 /* Link de destino após o envio — link rastreado (PixelX, domínio próprio). */
-const REDIRECT_URL = "https://pxa.cppem.com.br/lt/whatsapp-redirect";
+const REDIRECT_URL = "https://wa.me/5581973105354?text=Quero%20come%C3%A7ar%20minha%20prepara%C3%A7%C3%A3o!%20%F0%9F%92%80%F0%9F%94%A5";
 
 /* --- Elementos (IDs conforme index.html) --- */
 const form = document.getElementById("lead_form");
