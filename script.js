@@ -63,35 +63,38 @@ function validate() {
 }
 
 /* --- Envio --- */
-if (form) {
-  form.addEventListener("submit", (e) => {
+const submitBtn = document.getElementById("lead_submit");
+
+function enviar() {
+  if (!validate()) return;
+
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = "ENVIANDO...";
+  }
+
+  form?.reset();
+
+  const successEl = document.getElementById("form-success");
+  if (successEl) {
+    successEl.hidden = false;
+    successEl.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}
+
+submitBtn?.addEventListener("click", enviar);
+
+// Mantém o Enter funcionando sem submit nativo
+form?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
     e.preventDefault();
+    enviar();
+  }
+});
 
-    if (!validate()) return;
-
-    const btn = form.querySelector("button[type='submit']");
-
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = "ENVIANDO...";
-    }
-
-    // Mostra sucesso
-    form.reset();
-
-    const successEl = document.getElementById("form-success");
-
-    if (successEl) {
-      successEl.hidden = false;
-      successEl.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-      });
-    }
 
 //    // Redireciona para o link rastreado
 //    setTimeout(() => {
 //      window.location.href = REDIRECT_URL;
 //    }, 700);
-  });
-}
+
