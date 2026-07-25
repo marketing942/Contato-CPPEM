@@ -74,11 +74,23 @@ img{display:block;max-width:100%}
   max-width:36rem;margin:0 auto 2.2rem}
 
 /* ─── FORM ──────────────────────────────────────────────── */
+/* Card translúcido: a foto do herói atravessa o desfoque em vez de ser tapada,
+   o que ancora o formulário na cena sem competir com ele. */
 .form{width:100%;max-width:440px;margin:0 auto;text-align:left;
-  background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0)),var(--bg-2);
-  backdrop-filter:blur(6px);
+  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0)),rgba(17,17,21,.82);
+  backdrop-filter:blur(14px) saturate(1.1);-webkit-backdrop-filter:blur(14px) saturate(1.1);
   border:1px solid var(--border);border-top:3px solid var(--gold);border-radius:16px;
   padding:1.7rem 1.5rem;box-shadow:0 30px 70px rgba(0,0,0,.6)}
+
+/* Rótulo do card: mesma tipografia do .eyebrow das seções, com a régua saindo
+   para a direita — separa o cabeçalho dos campos sem acrescentar um título. */
+.form__label{display:flex;align-items:center;gap:.75rem;white-space:nowrap;
+  font-family:var(--font-body);font-size:.72rem;font-weight:700;
+  letter-spacing:.28em;text-transform:uppercase;color:var(--gold);
+  margin-bottom:1.15rem}
+.form__label::after{content:"";flex:1;height:1px;
+  background:linear-gradient(90deg,var(--border-active),transparent)}
+
 .field{margin-bottom:.85rem}
 .field input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;
   color:var(--text);font-family:inherit;font-size:1rem;font-weight:500;padding:.95rem 1rem;

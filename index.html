@@ -40,17 +40,19 @@
       Preencha o formulário abaixo e fale conosco para receber a orientação necessária para ser aprovado(a)!
     </p>
 
-    <form name="lead_form" id="IPEyzyfmJhKQEYIXAlZH" novalidate>
+    <form class="form" name="lead_form" id="IPEyzyfmJhKQEYIXAlZH" novalidate>
+      <p class="form__label">Ficha de inscrição</p>
+
       <div class="field">
-        <input type="text" id="lead_name" name="name" autocomplete="name" placeholder="Nome completo" required />
+        <input type="text" id="lead_name" name="name" autocomplete="name" aria-label="Nome completo" placeholder="Nome completo" required />
         <span class="error" data-error-for="name"></span>
       </div>
       <div class="field">
-        <input type="email" id="lead_email" name="email" autocomplete="email" placeholder="E-mail" required />
+        <input type="email" id="lead_email" name="email" autocomplete="email" aria-label="E-mail" placeholder="E-mail" required />
         <span class="error" data-error-for="email"></span>
       </div>
       <div class="field">
-        <input class="pxa_mask_phone" type="text" id="lead_phone" name="phone" autocomplete="tel" placeholder="Seu WhatsApp com DDD — ex: (00) 00000-0000" required />
+        <input class="pxa_mask_phone" type="text" id="lead_phone" name="phone" autocomplete="tel" aria-label="WhatsApp com DDD" placeholder="Seu WhatsApp com DDD — ex: (00) 00000-0000" required />
         <span class="error" data-error-for="phone"></span>
       </div>
 

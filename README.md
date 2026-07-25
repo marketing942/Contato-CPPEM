@@ -1,6 +1,14 @@
 # CPPEM Concursos — Landing Page
 
-Página única de captação. Dados do formulário vão direto para o Google Sheets.
+Página única de captação.
+
+> **Rastreamento (GTM + PixelX):** ver **[TRACKING.md](TRACKING.md)** — documenta
+> os atributos que o formulário precisa ter, os defeitos corrigidos e o checklist
+> para replicar a correção em outros sites.
+>
+> ⚠️ **A seção do Google Sheets abaixo está desatualizada.** O envio para o Sheets
+> foi removido do `script.js` (ver comentário no topo do arquivo); hoje o fluxo é
+> validação → evento de Lead pela PixelX → redirecionamento para o WhatsApp.
 
 ---
 
