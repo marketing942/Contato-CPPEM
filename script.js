@@ -37,14 +37,23 @@ function clearError(errorKey, input) {
 
 const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 
-/* Valida pela contagem de DÍGITOS, não pelo tamanho do texto — o campo pode
-   chegar aqui mascarado "(81) 97310-5354" (15 chars), cru "81973105354"
-   (11 chars) ou já normalizado pela PixelX "+5581973105354" (14 chars).
-   Exige celular brasileiro: DDD + 9 dígitos = 11 dígitos. */
+/* Valida pela contagem de DÍGITOS, não pelo tamanho do texto.
+
+   Atenção ao "+55": a máscara da PixelX ("+{55} (00) [9]0000-0000") renderiza
+   o código do país como texto FIXO, e o phone_valid() dela também devolve
+   "+5581999674123". Esses dois dígitos entram na contagem e mascaram números
+   incompletos — "+55 (81) 9996-741" soma 11 dígitos e passaria por um teste
+   ingênuo de "11 dígitos", mesmo faltando 2 do número real.
+
+   Por isso o prefixo de país é removido pelo "+" literal (que a máscara e o
+   phone_valid sempre escrevem) antes de contar. Sobra o número nacional, que
+   precisa ter DDD (2) + celular (9) = 11 dígitos, com o 9 na terceira posição.
+   Remover pelos dígitos seria ambíguo: DDD 55 existe (Santa Maria/RS). */
 const isPhone = (v) => {
-  let d = v.replace(/\D/g, "");
-  if (d.length === 13 && d.startsWith("55")) d = d.slice(2);
-  return d.length === 11;
+  const nacional = v.trim().replace(/^\+\s*55\s*/, "");
+  const d = nacional.replace(/\D/g, "");
+
+  return d.length === 11 && d[2] === "9";
 };
 
 function validate() {
@@ -119,12 +128,32 @@ submitBtn?.addEventListener(
   true
 );
 
-/* SEGUNDA BARREIRA — no "submit" do formulário.
-   Só é alcançada quando a validação passou, então o evento nativo dispara
-   normalmente (a PixelX captura o Lead) e o preventDefault apenas impede o
-   recarregamento da página. */
-form?.addEventListener("submit", (e) => {
-  e.preventDefault();
-  enviar();
-});
+/* SEGUNDA BARREIRA — "submit" capturado no DOCUMENT, não no formulário.
+   Um listener de captura no document roda SEMPRE antes de qualquer listener
+   registrado no próprio <form>, independente de quem registrou primeiro.
+   Isso é o que faltava: a PixelX registra o listener dela no form de dentro do
+   start(), que é assíncrono, então não havia garantia de que o nosso viesse
+   antes — se o dela rodasse primeiro, ela gravava o Lead antes de vermos que o
+   formulário era inválido.
+
+   - Inválido  -> stopImmediatePropagation(): o evento morre aqui e nunca chega
+                  à PixelX.
+   - Válido    -> deixamos propagar normalmente para ela registrar o Lead.
+   Em ambos os casos o preventDefault impede o recarregamento da página. */
+document.addEventListener(
+  "submit",
+  (e) => {
+    if (e.target !== form) return;
+
+    e.preventDefault();
+
+    if (!validate()) {
+      e.stopImmediatePropagation();
+      return;
+    }
+
+    enviar();
+  },
+  true
+);
 
