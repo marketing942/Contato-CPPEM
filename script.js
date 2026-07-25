@@ -65,36 +65,17 @@ function validate() {
 /* --- Envio --- */
 const submitBtn = document.getElementById("lead_submit");
 
-async function enviar() {
+function enviar() {
   if (!validate()) return;
-
-  /* Captura os valores ANTES do reset do formulário. */
-  const nome = nomeInput?.value.trim() || "";
-  const email = emailInput?.value.trim() || "";
-  const telefone = telefoneInput?.value.trim() || "";
 
   if (submitBtn) {
     submitBtn.disabled = true;
     submitBtn.textContent = "ENVIANDO...";
   }
 
-  /* PixelX — evento de Lead.
-     Precisa ser disparado ANTES de qualquer redirecionamento. */
-  try {
-    await window.pixel_x_app?.send_event({
-      // Evento
-      event_name: "Lead",
-
-      // Lead
-      lead_name: nome,
-      lead_email: email,
-      lead_phone: telefone,
-    });
-  } catch (err) {
-    console.error("PixelX send_event falhou:", err);
-  }
-
-  form?.reset();
+  /* NÃO disparar send_event('Lead') aqui.
+     O script da PixelX (servidor) já dispara o Lead no submit deste
+     formulário. Chamar send_event manualmente duplicava o evento. */
 
   const successEl = document.getElementById("form-success");
   if (successEl) {
@@ -103,10 +84,9 @@ async function enviar() {
   }
 }
 
-/* Escuta o evento "submit" do próprio formulário (e não o "click" do botão):
-   assim o evento nativo continua sendo disparado — é ele que o
-   pixel_x_app.monitor_forms() escuta — e o preventDefault apenas impede
-   a navegação/recarregamento da página. O Enter também cai aqui. */
+/* Escuta o "submit" do formulário (e não o "click" do botão): o evento nativo
+   continua sendo disparado — é nele que a PixelX se engancha — e o
+   preventDefault apenas impede o recarregamento. O Enter também cai aqui. */
 form?.addEventListener("submit", (e) => {
   e.preventDefault();
   enviar();
