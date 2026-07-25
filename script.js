@@ -103,17 +103,13 @@ async function enviar() {
   }
 }
 
-submitBtn?.addEventListener("click", (e) => {
+/* Escuta o evento "submit" do próprio formulário (e não o "click" do botão):
+   assim o evento nativo continua sendo disparado — é ele que o
+   pixel_x_app.monitor_forms() escuta — e o preventDefault apenas impede
+   a navegação/recarregamento da página. O Enter também cai aqui. */
+form?.addEventListener("submit", (e) => {
   e.preventDefault();
   enviar();
-});
-
-// Mantém o Enter funcionando sem submit nativo
-form?.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    enviar();
-  }
 });
 
 
