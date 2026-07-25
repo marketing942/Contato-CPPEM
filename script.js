@@ -37,6 +37,16 @@ function clearError(errorKey, input) {
 
 const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 
+/* Valida pela contagem de DÍGITOS, não pelo tamanho do texto — o campo pode
+   chegar aqui mascarado "(81) 97310-5354" (15 chars), cru "81973105354"
+   (11 chars) ou já normalizado pela PixelX "+5581973105354" (14 chars).
+   Exige celular brasileiro: DDD + 9 dígitos = 11 dígitos. */
+const isPhone = (v) => {
+  let d = v.replace(/\D/g, "");
+  if (d.length === 13 && d.startsWith("55")) d = d.slice(2);
+  return d.length === 11;
+};
+
 function validate() {
   let ok = true;
 
@@ -58,8 +68,8 @@ function validate() {
     ok = false;
   }
 
-  if (tel.length < 13) {
-    setError("phone", telefoneInput, "Informe seu WhatsApp.");
+  if (!isPhone(tel)) {
+    setError("phone", telefoneInput, "Informe seu WhatsApp com DDD — ex: (81) 90000-0000.");
     ok = false;
   }
 
@@ -95,9 +105,24 @@ function enviar() {
   }, REDIRECT_DELAY_MS);
 }
 
-/* Escuta o "submit" do formulário (e não o "click" do botão): o evento nativo
-   continua sendo disparado — é nele que a PixelX se engancha — e o
-   preventDefault apenas impede o recarregamento. O Enter também cai aqui. */
+/* PRIMEIRA BARREIRA — no clique do botão, fase de captura.
+   Se os dados forem inválidos, o preventDefault aqui cancela a ação padrão do
+   botão, e o navegador NUNCA chega a disparar o evento "submit". É isso que
+   impede a PixelX (que escuta "submit" no formulário) de registrar um Lead
+   incompleto. O Enter também passa por aqui: a submissão implícita dispara um
+   click no botão de submit padrão do formulário. */
+submitBtn?.addEventListener(
+  "click",
+  (e) => {
+    if (!validate()) e.preventDefault();
+  },
+  true
+);
+
+/* SEGUNDA BARREIRA — no "submit" do formulário.
+   Só é alcançada quando a validação passou, então o evento nativo dispara
+   normalmente (a PixelX captura o Lead) e o preventDefault apenas impede o
+   recarregamento da página. */
 form?.addEventListener("submit", (e) => {
   e.preventDefault();
   enviar();
