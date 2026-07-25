@@ -58,7 +58,7 @@ function validate() {
     ok = false;
   }
 
-  if (tel.length < 1) {
+  if (tel.length < 13) {
     setError("phone", telefoneInput, "Informe seu WhatsApp.");
     ok = false;
   }
