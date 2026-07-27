@@ -239,7 +239,82 @@ simulando a regra de submit do painel:
 
 ---
 
-## 9. Checklist antes de publicar
+---
+
+## 9. ⚠️ "O popup parou de abrir" — leia antes de suspeitar do código
+
+**Este é o erro mais fácil de cometer, e já foi cometido.** Depois de testar o
+site algumas vezes, o popup para de aparecer e parece quebrado. Na quase
+totalidade dos casos ele está funcionando — o bloqueio está no **seu navegador**.
+
+### Por que acontece
+
+As travas de exibição gravam estado no navegador. Testar o site aciona essas
+travas exatamente como um visitante real acionaria:
+
+| Chave | Onde | Duração | Grava quando |
+|---|---|---|---|
+| `cppem_captura_exit_seen` | sessionStorage | a sessão | o popup aparece |
+| `cppem_captura_exit_snooze` | localStorage | **3 dias** | você fecha OU envia o popup |
+| `cppem_captura_lead_converted` | localStorage | **para sempre** | o visitante se cadastra **na comunidade** |
+
+> Nesta landing o formulário **principal não** grava `lead_converted` — só o
+> cadastro na comunidade grava. Mas atenção: fechar o popup uma única vez já
+> ativa o snooze de **3 dias**, e isso basta para parecer que ele quebrou.
+
+### Diagnóstico em 5 segundos
+
+No console do site:
+
+```js
+ExitPopup.isBlocked()                        // true = travado, o código está OK
+localStorage.getItem("cppem_captura_lead_converted")  // "1" = é este o motivo
+localStorage.getItem("cppem_captura_exit_snooze")     // timestamp futuro = snooze ativo
+```
+
+### Como destravar para testar
+
+```js
+sessionStorage.clear(); localStorage.clear(); location.reload();
+```
+
+Depois **aguarde 8 segundos** na página antes de tentar sair — abaixo do
+`ARM_DELAY` o gatilho nem está armado, e nada vai acontecer por mais correto que
+o gesto esteja.
+
+Para abrir na hora, ignorando todas as travas:
+
+```js
+ExitPopup.show();
+```
+
+### Antes de concluir que o deploy falhou
+
+Verifique se o que está no ar realmente tem o código, em vez de supor:
+
+```bash
+curl -s https://SEU-DOMINIO/script.js | grep -c "EXIT_POPUP_ENABLED"   # > 0
+curl -sL https://SEU-DOMINIO/ | grep -c 'id="exit-modal"'              # 1
+```
+
+### A ordem certa de investigação
+
+1. `ExitPopup.isBlocked()` → `true`? É storage. Limpe e recarregue.
+2. Esperou os 8 segundos do `ARM_DELAY`?
+3. O `curl` acima confirma o código no ar?
+4. Console com erro de JS antes do fim do `script.js`? Um erro no topo impede o
+   `init()` de rodar.
+5. Só depois disso suspeite da lógica do gatilho.
+
+> **Trade-off consciente:** `cppem_captura_lead_converted` não expira. Faz sentido para não
+> importunar quem já virou lead, mas significa que quem preencheu o formulário
+> uma vez nunca mais vê a oferta da comunidade — e torna qualquer teste inviável
+> sem limpar o storage. Se preferir, dá para fazer esse bloqueio expirar (30/90
+> dias) ou não aplicá-lo ao popup.
+
+---
+
+## 10. Checklist antes de publicar
 
 - [x] `COMMUNITY_URL` preenchido com o link rastreado dos grupos
 - [ ] Confirmado no painel que o link `/lt/` **não** está marcado como conversão
@@ -260,7 +335,7 @@ simulando a regra de submit do painel:
 
 ---
 
-## 10. Limitações honestas
+## 11. Limitações honestas
 
 - **Exit intent de verdade não existe no mobile.** Não há evento de "vou sair".
   Inatividade e *push* ao topo são aproximações de comportamento. Parte do
