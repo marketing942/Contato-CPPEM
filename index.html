@@ -316,10 +316,51 @@
     </div>
   </footer>
 
+  <!-- ═══ EXIT POPUP (INTENÇÃO DE SAÍDA) ═══ -->
+  <div class="modal" id="exit-modal" hidden>
+    <div class="modal__overlay" data-exit-close></div>
+    <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="exit-title">
+      <button type="button" class="modal__close" data-exit-close aria-label="Fechar">&times;</button>
+
+      <span class="eyebrow exit__eyebrow">Espera um pouco</span>
+      <h2 class="exit__title" id="exit-title">Não desista do seu sonho de <span>vestir a farda</span>!</h2>
+      <p class="exit__sub">Inscreva-se abaixo para receber:</p>
+
+      <ul class="exit__benefits">
+        <li>Comunidade com notícias diárias, materiais gratuitos, questões e descontos!</li>
+      </ul>
+
+      <form class="exit__form" id="exit-form" novalidate>
+        <div class="field">
+          <input type="text" id="exit_name" name="name" autocomplete="name" aria-label="Nome completo" placeholder="Nome completo" required />
+          <span class="error" data-error-for="exit_name"></span>
+        </div>
+        <div class="field">
+          <input type="email" id="exit_email" name="email" autocomplete="email" aria-label="E-mail" placeholder="E-mail" required />
+          <span class="error" data-error-for="exit_email"></span>
+        </div>
+        <div class="field">
+          <input type="text" id="exit_phone" name="phone" inputmode="tel" autocomplete="tel" aria-label="WhatsApp com DDD" placeholder="Seu WhatsApp com DDD" required />
+          <span class="error" data-error-for="exit_phone"></span>
+        </div>
+
+        <button type="submit" class="cta" id="exit_submit">QUERO ENTRAR NA COMUNIDADE</button>
+
+        <p class="note">Cadastro gratuito. Seus dados estão seguros.</p>
+        <p class="success" id="exit-success" role="status" hidden>
+          ✅ Inscrição confirmada!<br />
+          Você está entrando na comunidade.
+        </p>
+      </form>
+
+      <button type="button" class="exit__decline" data-exit-close data-exit-decline>Não, quero continuar sem ajuda</button>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 
   <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://sgtm.cppem.com.br/ns.html?id= GTM-PJ379FLQ"
+  <noscript><iframe src="https://sgtm.cppem.com.br/ns.html?id=GTM-PJ379FLQ"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
 

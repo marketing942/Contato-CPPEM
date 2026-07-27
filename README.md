@@ -2,9 +2,15 @@
 
 Página única de captação.
 
-> **Rastreamento (GTM + PixelX):** ver **[TRACKING.md](TRACKING.md)** — documenta
-> os atributos que o formulário precisa ter, os defeitos corrigidos e o checklist
-> para replicar a correção em outros sites.
+> **Rastreamento (GTM + PixelX):** ver **[TRACKING.md](TRACKING.md)** — guia de
+> implantação e diagnóstico do evento **Lead**. Cobre os atributos que o
+> formulário precisa ter, os defeitos corrigidos, o inventário dos 5 emissores de
+> Lead (causa do evento duplicado/triplicado), o template portável e o protocolo
+> de diagnóstico para replicar em outros sites.
+>
+> Ao levar para outro site, **não copie o `script.js` deste projeto** — ele tem o
+> `id` do formulário e a URL de redirecionamento do CPPEM embutidos. Use o
+> template portável da seção 9 do TRACKING.md.
 >
 > ⚠️ **A seção do Google Sheets abaixo está desatualizada.** O envio para o Sheets
 > foi removido do `script.js` (ver comentário no topo do arquivo); hoje o fluxo é
