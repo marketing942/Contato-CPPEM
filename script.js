@@ -6,8 +6,9 @@
    >>> Redirecionamento agora usa um único link rastreado (PixelX).
    ========================================================= */
 
-/* Link de destino após o envio — link rastreado (PixelX, domínio próprio). */
-const REDIRECT_URL = "wa.me/5581973105354";
+/* Link de destino após o envio. URL ABSOLUTA (com https://) — sem o esquema o
+   navegador trata como caminho relativo e cai em contato.cppem.com.br/wa.me/... (404). */
+const REDIRECT_URL = "https://wa.me/5581973105354?text=Quero%20come%C3%A7ar%20minha%20prepara%C3%A7%C3%A3o!";
 
 /* Tempo antes de redirecionar. Precisa ser suficiente para a PixelX enviar o
    Lead — o handler dela roda no submit, mas a requisição é assíncrona. */
@@ -178,7 +179,7 @@ const STORAGE_PREFIX     = "cppem_captura";
 
 /* Destino do cadastro na comunidade — link rastreado (PixelX, domínio próprio).
    Vazio = cairia no mesmo destino do formulário principal. */
-const COMMUNITY_URL = "chat.whatsapp.com/BxOuisctuqV3UWT9ldASe4";
+const COMMUNITY_URL = "https://chat.whatsapp.com/BxOuisctuqV3UWT9ldASe4";
 
 /* OPCIONAL: URL do Apps Script que recebe o cadastro da comunidade.
    Vazio = o popup não armazena nada, só redireciona. */
