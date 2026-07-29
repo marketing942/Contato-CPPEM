@@ -65,7 +65,7 @@ img{display:block;max-width:100%}
 
 /* ─── HERO ──────────────────────────────────────────────── */
 .hero{text-align:center;padding-top:1rem}
-.logo{height:66px;width:auto;margin:0 auto 2rem}
+.logo{height:86px;width:auto;margin:0 auto 2rem}
 
 .headline{font-family:var(--font-title);font-weight:800;text-transform:uppercase;
   font-size:clamp(2.1rem,7vw,3.6rem);line-height:1.02;letter-spacing:.005em;margin-bottom:1rem}

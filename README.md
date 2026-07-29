@@ -66,7 +66,7 @@ cppem-lp/
 ├── vercel.json
 ├── .gitignore
 └── public/assets/
-    ├── logo-cppem.png
+    ├── logo-cppem.webp
     ├── brasao-pmpe.png
     ├── bg-collage.jpg      ← fundo mesclado das imagens
     ├── everton-mota.jpg
