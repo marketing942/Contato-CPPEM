@@ -2,9 +2,49 @@
    CPPEM — Formulário de captura
    (rastreamento é feito 100% via Google Tag Manager server-side)
 
-   >>> Envio para Google Sheets REMOVIDO temporariamente.
-   >>> Redirecionamento agora usa um único link rastreado (PixelX).
+   >>> Redirecionamento usa um único link rastreado (PixelX).
+   >>> Backup do lead na planilha: reativado, agora na aba única LEADS,
+   >>> a mesma dos demais projetos (UNICIVE, PMPE, COLEGIO).
    ========================================================= */
+
+/* Todos os projetos gravam na MESMA aba (LEADS) da planilha. O ?aba= não
+   escolhe a aba de destino: ele identifica QUEM enviou, e vira a coluna
+   "Origem" lá. */
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbxdFplWVSfhTjvyIA7HIWb645xRjGNhBVhTdTf5UMjo0lSpW_A_jCuys0qB4uImKXPQ/exec?aba=CPPEM";
+
+/* ---------- UTMs ----------
+   As UTMs só existem na URL do PRIMEIRO acesso. Se a pessoa recarrega, volta
+   pelo histórico, ou o link do anúncio cai numa página que redireciona, o
+   ?utm_source= já não está mais lá na hora do submit — e o lead chegava na
+   planilha sem origem nenhuma. Por isso gravamos assim que a página carrega e
+   lemos do storage no envio (first touch). O try/catch cobre navegador com
+   storage bloqueado (aba anônima, ITP), onde o comportamento volta a ser o
+   antigo em vez de quebrar o formulário. */
+const UTM_CAMPOS = ["utm_source", "utm_campaign"];
+
+(function guardarUTMs() {
+  UTM_CAMPOS.forEach((chave) => {
+    const valor = qs.get(chave);
+    if (!valor) return;
+
+    try {
+      sessionStorage.setItem(chave, valor);
+    } catch (e) {
+      /* storage indisponível: segue sem persistir */
+    }
+  });
+})();
+
+function utm(chave) {
+  const daUrl = new URLSearchParams(window.location.search).get(chave);
+  if (daUrl) return daUrl;
+
+  try {
+    return sessionStorage.getItem(chave) || "";
+  } catch (e) {
+    return "";
+  }
+}
 
 /* Link de destino após o envio. URL ABSOLUTA (com https://) — sem o esquema o
    navegador trata como caminho relativo e cai em contato.cppem.com.br/wa.me/... (404). */
@@ -101,6 +141,26 @@ function enviar() {
      O script da PixelX (servidor) já dispara o Lead no submit deste
      formulário. Chamar send_event manualmente duplicava o evento. */
 
+  /* Backup na planilha. Fire-and-forget de propósito: com mode:"no-cors" não
+     dá para ler a resposta, então esperar não garantiria nada — só atrasaria o
+     redirect. O REDIRECT_DELAY_MS abaixo já dá folga para a requisição sair. */
+  fetch(SHEET_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({
+      nome: nomeInput?.value.trim() || "",
+      email: emailInput?.value.trim() || "",
+      telefone: telefoneInput?.value.trim() || "",
+      origem: "CPPEM",
+      pagina_url: window.location.href,
+      utm_source: utm("utm_source"),
+      utm_campaign: utm("utm_campaign")
+    })
+  }).catch((err) => {
+    console.error("[Form] Falha ao salvar na planilha (segue o redirect):", err);
+  });
+
   const successEl = document.getElementById("form-success");
   if (successEl) {
     successEl.hidden = false;
@@ -183,6 +243,9 @@ const COMMUNITY_URL = "https://chat.whatsapp.com/BxOuisctuqV3UWT9ldASe4";
 
 /* OPCIONAL: URL do Apps Script que recebe o cadastro da comunidade.
    Vazio = o popup não armazena nada, só redireciona. */
+/* Exit popup da comunidade: continua desligado (string vazia = não envia).
+   Para ligar, basta usar a mesma implantação, mudando só a identificação:
+   SHEET_URL.replace("?aba=CPPEM", "?aba=CAPTURA_COMUNIDADE") */
 const COMMUNITY_ENDPOINT = "";
 
 /* Gatilho mobile: "push" bruto de volta ao topo. Só dispara no gesto inteiro —
