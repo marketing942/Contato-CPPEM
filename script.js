@@ -7,9 +7,9 @@
    >>> a mesma dos demais projetos (UNICIVE, PMPE, COLEGIO).
    ========================================================= */
 
-/* Todos os projetos gravam na MESMA aba (LEADS) da planilha. O ?aba= não
-   escolhe a aba de destino: ele identifica QUEM enviou, e vira a coluna
-   "Origem" lá. */
+/* Todos os projetos gravam na MESMA aba da planilha: CPPEM. O ?aba= não
+   escolhe a aba de destino — ele identifica QUEM enviou, e o backend usa isso
+   para aceitar (ou barrar) o lead e rotular a origem. */
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbxdFplWVSfhTjvyIA7HIWb645xRjGNhBVhTdTf5UMjo0lSpW_A_jCuys0qB4uImKXPQ/exec?aba=CPPEM";
 
 /* ---------- UTMs ----------
