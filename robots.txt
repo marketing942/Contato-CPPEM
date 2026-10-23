@@ -1,0 +1,15 @@
+# CPPEM Concursos — contato.cppem.com.br
+# Página de captação: indexável. Os arquivos internos do repositório
+# (documentação e scripts de apoio) são publicados pela Vercel junto com o
+# site e não têm valor de busca.
+User-agent: *
+Allow: /
+Disallow: /docs/
+Disallow: /README.md
+Disallow: /TRACKING.md
+Disallow: /EXIT-POPUP.md
+Disallow: /google-apps-script.js
+Disallow: /validar-tracking.js
+Disallow: /package-lock.json
+
+Sitemap: https://contato.cppem.com.br/sitemap.xml
